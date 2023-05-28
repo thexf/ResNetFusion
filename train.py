@@ -29,8 +29,8 @@ CROP_SIZE = opt.crop_size #裁剪会带来拼尽问题嘛
 UPSCALE_FACTOR = opt.upscale_factor #上采样
 NUM_EPOCHS = opt.num_epochs #轮数
 
-train_set = TrainDatasetFromFolder('/data/lpw/FusionDataset/train/', crop_size=CROP_SIZE, upscale_factor=UPSCALE_FACTOR) #训练集导入
-val_set = ValDatasetFromFolder('/data/lpw/FusionDataset/val/', upscale_factor=UPSCALE_FACTOR) #测试集导入
+train_set = TrainDatasetFromFolder('./data/train/', crop_size=CROP_SIZE, upscale_factor=UPSCALE_FACTOR) #训练集导入
+val_set = ValDatasetFromFolder('./data/val/', upscale_factor=UPSCALE_FACTOR) #测试集导入
 train_loader = DataLoader(dataset=train_set, num_workers=4, batch_size=64, shuffle=True) #训练集制作
 val_loader = DataLoader(dataset=val_set, num_workers=4, batch_size=1, shuffle=False)
 
@@ -140,7 +140,7 @@ for epoch in range(1, NUM_EPOCHS + 1):
         writer.add_scalar('g_d_perception_loss', running_results['g_d_perception_loss'] / running_results['batch_sizes'],count)
         count += 1
     netG.eval()
-    out_path = '/data/lpw/ResnetFusion/training_results/SRF_' + str(UPSCALE_FACTOR) + '/'#输出路径
+    out_path = './results/training_results/SRF_' + str(UPSCALE_FACTOR) + '/'#输出路径
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     val_bar = tqdm(val_loader) #验证集的进度条
@@ -170,8 +170,11 @@ for epoch in range(1, NUM_EPOCHS + 1):
         index += 1
 
     # save model parameters
-    torch.save(netG.state_dict(), '/data/lpw/ResnetFusion/epochs/netG_epoch_%d_%d.pth' % (UPSCALE_FACTOR, epoch))#存储网络参数
-    torch.save(netD.state_dict(), '/data/lpw/ResnetFusion/epochs/netD_epoch_%d_%d.pth' % (UPSCALE_FACTOR, epoch))#
+    save_path = '/results/epochs/'
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    torch.save(netG.state_dict(), './results/epochs/netG_epoch_%d_%d.pth' % (UPSCALE_FACTOR, epoch))#存储网络参数
+    torch.save(netD.state_dict(), './results/epochs/netD_epoch_%d_%d.pth' % (UPSCALE_FACTOR, epoch))#
     results['d_loss'].append(running_results['d_loss'] / running_results['batch_sizes'])
     results['g_loss'].append(running_results['g_loss'] / running_results['batch_sizes'])
     results['d_score'].append(running_results['d_score'] / running_results['batch_sizes'])

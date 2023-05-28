@@ -28,17 +28,18 @@ CROP_SIZE = opt.crop_size #裁剪会带来拼尽问题嘛
 UPSCALE_FACTOR = opt.upscale_factor #上采样
 NUM_EPOCHS = opt.num_epochs #轮数
 
-val_set = TestDatasetFromFolder('/data/lpw/FusionDataset/val/', upscale_factor=UPSCALE_FACTOR) #测试集导入
+val_set = TestDatasetFromFolder('./data/val/', upscale_factor=UPSCALE_FACTOR) #测试集导入
 
-MODEL_NAME = 'netG_epoch_1_3000.pth'
+MODEL_NAME = 'netG_epoch_1_4000.pth'
 netG = Generator(UPSCALE_FACTOR).eval()
 netG.cuda()
-netG.load_state_dict(torch.load('/data/lpw/ResnetFusion/epochs/' + MODEL_NAME))
+netG.load_state_dict(torch.load('./results/epochs/' + MODEL_NAME))
 val_loader = DataLoader(dataset=val_set, num_workers=4, batch_size=1, shuffle=False)
 
 epoch =1
-out_path = '/data/lpw/ResnetFusion/test_results/SRF_' + str(UPSCALE_FACTOR) + '/'#输出路径
-
+out_path = './results/test_results/SRF_' + str(UPSCALE_FACTOR) + '/'#输出路径
+if not os.path.exists(out_path):
+    os.makedirs(out_path)
 
 val_bar = tqdm(val_loader) #验证集的进度条
 val_images = []
@@ -60,7 +61,7 @@ val_images = torch.stack(val_images)#看不懂
 val_images = torch.split(val_images, val_images.size(0) // 13,dim=0)#看不懂，骚操作
 for i,image in enumerate(val_images):
     print('{}th size {}'.format(i,image.size()))
-val_save_bar = tqdm(val_images, desc='[saving training results]')
+val_save_bar = tqdm(val_images, desc='[saving testing results]')
 index = 1
 for image in val_save_bar:
     image = utils.make_grid(image, nrow=3, padding=2,scale_each=True)

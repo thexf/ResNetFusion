@@ -49,7 +49,7 @@ class TrainDatasetFromFolder(Dataset):
     def __init__(self, dataset_dir, crop_size, upscale_factor):
         super(TrainDatasetFromFolder, self).__init__()
         self.visible_image_filenames = [join(dataset_dir+'vi/', x) for x in listdir(dataset_dir+'vi/') if is_image_file(x)]
-        self.infrared_image_filenames = [x.replace('vi/V','ir/I') for x in self.visible_image_filenames]
+        self.infrared_image_filenames = [join(dataset_dir+'ir/', x) for x in listdir(dataset_dir+'ir/') if is_image_file(x)]
         crop_size = calculate_valid_crop_size(crop_size, upscale_factor)
         self.hr_transform = train_hr_transform(crop_size)
         self.vis_ir_transform = train_vis_ir_transform()
@@ -75,7 +75,7 @@ class ValDatasetFromFolder(Dataset):
         super(ValDatasetFromFolder, self).__init__()
         self.upscale_factor = upscale_factor
         self.visible_image_filenames = [join(dataset_dir+'vi/', x) for x in listdir(dataset_dir+'vi/') if is_image_file(x)]
-        self.infrared_image_filenames = [x.replace('vi/V','ir/I') for x in self.visible_image_filenames]
+        self.infrared_image_filenames = [join(dataset_dir+'ir/', x) for x in listdir(dataset_dir+'ir/') if is_image_file(x)]
 
     def __getitem__(self, index):
         visible_image = Image.open(self.visible_image_filenames[index])
@@ -99,10 +99,10 @@ class TestDatasetFromFolder(Dataset):
     def __init__(self, dataset_dir, upscale_factor):
         super(TestDatasetFromFolder, self).__init__()
         self.upscale_factor = upscale_factor
-        imagelist = listdir(dataset_dir+'tmp/vi/')
+        imagelist = listdir(dataset_dir+'vi/')
         imagelist.sort()
-        self.visible_image_filenames = [join(dataset_dir+'tmp/vi/', x) for x in imagelist if is_image_file(x)]
-        self.infrared_image_filenames = [x.replace('tmp/vi/V_','tmp/ir/I_') for x in self.visible_image_filenames]
+        self.visible_image_filenames = [join(dataset_dir+'vi/', x) for x in listdir(dataset_dir+'vi/') if is_image_file(x)]
+        self.infrared_image_filenames = [join(dataset_dir+'ir/', x) for x in listdir(dataset_dir+'ir/') if is_image_file(x)]
 
     def __getitem__(self, index):
         visible_image = Image.open(self.visible_image_filenames[index])
