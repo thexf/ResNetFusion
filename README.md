@@ -7,9 +7,9 @@
 conda env create -f environment.yml
 ```
 
-## 数据
+## 数据集
 
-数据已经处理成模型需要的格式存在 `data` 文件夹中
+数据集已经处理成模型需要的格式存放在 `data` 文件夹中
 
 ## 训练
 
@@ -30,3 +30,5 @@ python3 image_test.py
 ```
 
 - 测试结果保存在 `result/test_resultss/SRF_1/`
+
+![image](./results/test_results/SRF_1/epoch_1_index_1.png "测试结果样例")
