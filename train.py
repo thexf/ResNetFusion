@@ -170,7 +170,7 @@ for epoch in range(1, NUM_EPOCHS + 1):
         index += 1
 
     # save model parameters
-    save_path = '/results/epochs/'
+    save_path = './results/epochs/'
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     torch.save(netG.state_dict(), './results/epochs/netG_epoch_%d_%d.pth' % (UPSCALE_FACTOR, epoch))#存储网络参数
